@@ -89,10 +89,18 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="${{ steps.ver.outputs.version }}"
-          gh release create "v$VERSION" "ClaudeNotchBar-$VERSION.dmg" \
-            --title "ClaudeNotchBar v$VERSION" \
-            --generate-notes \
-            --latest
+          NOTES_FILE=".github/release-notes/v$VERSION.md"
+          if [ -f "$NOTES_FILE" ]; then
+            gh release create "v$VERSION" "ClaudeNotchBar-$VERSION.dmg" \
+              --title "ClaudeNotchBar v$VERSION" \
+              --notes-file "$NOTES_FILE" \
+              --latest
+          else
+            gh release create "v$VERSION" "ClaudeNotchBar-$VERSION.dmg" \
+              --title "ClaudeNotchBar v$VERSION" \
+              --generate-notes \
+              --latest
+          fi
 
       - name: Bump Homebrew cask
         if: startsWith(github.ref, 'refs/tags/')
