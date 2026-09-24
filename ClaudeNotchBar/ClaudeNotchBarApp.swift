@@ -15,8 +15,10 @@ struct ClaudeNotchBarApp: App {
     @StateObject private var tracker = UsageTracker()
     @Environment(\.openWindow) private var openWindow
 
-    private let chromeTint = Color.gray.opacity(0.09)
-    private let contentTint = Color.gray.opacity(0.03)
+    // Color.gray est une teinte fixe (ne suit pas clair/sombre) : Color.primary s'adapte
+    // (noir en clair, blanc en sombre), meme pattern que le track de MenuBarProgressLabel.
+    private let chromeTint = Color.primary.opacity(0.06)
+    private let contentTint = Color.primary.opacity(0.02)
 
     // MenuBarExtra's `label:` closure is hosted by NSStatusItem.button, which ignores
     // custom Shape fills/colors when the view is passed in directly (confirmed AppKit
