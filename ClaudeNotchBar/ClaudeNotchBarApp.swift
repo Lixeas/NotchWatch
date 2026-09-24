@@ -90,8 +90,7 @@ struct ClaudeNotchBarApp: App {
                         }
                         .font(.hostGrotesk(13))
 
-                        ProgressView(value: tracker.percentUsed)
-                            .tint(UsageColor.forPercent(tracker.percentUsed))
+                        UsageProgressBar(percentUsed: tracker.percentUsed)
                     }
 
                     if let fiveHour = tracker.fiveHourUtilization {
