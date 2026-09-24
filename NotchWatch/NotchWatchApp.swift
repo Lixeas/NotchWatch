@@ -10,7 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 @main
-struct ClaudeNotchBarApp: App {
+struct NotchWatchApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var tracker = UsageTracker()
     @Environment(\.openWindow) private var openWindow
@@ -51,7 +51,7 @@ struct ClaudeNotchBarApp: App {
                 HStack(spacing: 8) {
                     Image(systemName: "cpu")
                         .foregroundColor(.secondary)
-                    Text("ClaudeNotchBar")
+                    Text("NotchWatch")
                         .font(.hostGroteskBold(12))
                     Spacer()
                     Button {

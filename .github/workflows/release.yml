@@ -40,16 +40,16 @@ jobs:
       - name: Build release binary
         run: swift build -c release
 
-      - name: Assemble ClaudeNotchBar.app
+      - name: Assemble NotchWatch.app
         run: |
           set -euo pipefail
           VERSION="${{ steps.ver.outputs.version }}"
           BIN_PATH=$(swift build -c release --show-bin-path)
-          APP="ClaudeNotchBar.app"
+          APP="NotchWatch.app"
 
           rm -rf "$APP"
           mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-          cp "$BIN_PATH/ClaudeNotchBar" "$APP/Contents/MacOS/ClaudeNotchBar"
+          cp "$BIN_PATH/NotchWatch" "$APP/Contents/MacOS/NotchWatch"
 
           # SPM resource bundle (embedded fonts) — copy if present next to the built binary.
           for bundle in "$BIN_PATH"/*.bundle; do
@@ -61,10 +61,10 @@ jobs:
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
-            <key>CFBundleExecutable</key><string>ClaudeNotchBar</string>
-            <key>CFBundleIdentifier</key><string>com.lixeas.claudenotchbar</string>
-            <key>CFBundleName</key><string>ClaudeNotchBar</string>
-            <key>CFBundleDisplayName</key><string>ClaudeNotchBar</string>
+            <key>CFBundleExecutable</key><string>NotchWatch</string>
+            <key>CFBundleIdentifier</key><string>com.lixeas.notchwatch</string>
+            <key>CFBundleName</key><string>NotchWatch</string>
+            <key>CFBundleDisplayName</key><string>NotchWatch</string>
             <key>CFBundlePackageType</key><string>APPL</string>
             <key>CFBundleShortVersionString</key><string>$VERSION</string>
             <key>CFBundleVersion</key><string>$VERSION</string>
@@ -85,9 +85,9 @@ jobs:
           VERSION="${{ steps.ver.outputs.version }}"
           rm -rf dmg-root
           mkdir dmg-root
-          cp -R ClaudeNotchBar.app dmg-root/
+          cp -R NotchWatch.app dmg-root/
           ln -s /Applications dmg-root/Applications
-          hdiutil create -volname "ClaudeNotchBar" -srcfolder dmg-root -ov -format UDZO "ClaudeNotchBar-$VERSION.dmg"
+          hdiutil create -volname "NotchWatch" -srcfolder dmg-root -ov -format UDZO "NotchWatch-$VERSION.dmg"
 
       - name: Publish GitHub release
         env:
@@ -96,13 +96,13 @@ jobs:
           VERSION="${{ steps.ver.outputs.version }}"
           NOTES_FILE=".github/release-notes/v$VERSION.md"
           if [ -f "$NOTES_FILE" ]; then
-            gh release create "v$VERSION" "ClaudeNotchBar-$VERSION.dmg" \
-              --title "ClaudeNotchBar v$VERSION" \
+            gh release create "v$VERSION" "NotchWatch-$VERSION.dmg" \
+              --title "NotchWatch v$VERSION" \
               --notes-file "$NOTES_FILE" \
               --latest
           else
-            gh release create "v$VERSION" "ClaudeNotchBar-$VERSION.dmg" \
-              --title "ClaudeNotchBar v$VERSION" \
+            gh release create "v$VERSION" "NotchWatch-$VERSION.dmg" \
+              --title "NotchWatch v$VERSION" \
               --generate-notes \
               --latest
           fi
@@ -112,16 +112,16 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="${{ steps.ver.outputs.version }}"
-          SHA=$(shasum -a 256 "ClaudeNotchBar-$VERSION.dmg" | cut -d ' ' -f1)
+          SHA=$(shasum -a 256 "NotchWatch-$VERSION.dmg" | cut -d ' ' -f1)
 
           git fetch origin main
           git checkout -B main origin/main
 
-          sed -i '' -E "s/version \".*\"/version \"$VERSION\"/" Casks/claude-notch-bar.rb
-          sed -i '' -E "s/sha256 \".*\"/sha256 \"$SHA\"/" Casks/claude-notch-bar.rb
+          sed -i '' -E "s/version \".*\"/version \"$VERSION\"/" Casks/notch-watch.rb
+          sed -i '' -E "s/sha256 \".*\"/sha256 \"$SHA\"/" Casks/notch-watch.rb
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Casks/claude-notch-bar.rb
+          git add Casks/notch-watch.rb
           git diff --staged --quiet || git commit -m "chore: bump cask to v$VERSION"
           git push origin main

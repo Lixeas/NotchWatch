@@ -1,5 +1,5 @@
 import XCTest
-@testable import ClaudeNotchBar
+@testable import NotchWatch
 
 final class ClaudeModelsTests: XCTestCase {
     func testDecodeAndPercentUsed() throws {

@@ -61,7 +61,7 @@ struct SettingsView: View {
                 Text("Demarrage")
                     .font(.hostGroteskSemiBold(14))
 
-                Toggle("Lancer ClaudeNotchBar a l'ouverture de session", isOn: Binding(
+                Toggle("Lancer NotchWatch a l'ouverture de session", isOn: Binding(
                     get: { launchAtLogin },
                     set: { setLaunchAtLogin($0) }
                 ))
@@ -76,7 +76,7 @@ struct SettingsView: View {
 
             Divider()
 
-            Text("ClaudeNotchBar \u{2022} version \(AppVersion.string)")
+            Text("NotchWatch \u{2022} version \(AppVersion.string)")
                 .font(.hostGrotesk(11))
                 .foregroundColor(.secondary)
         }
