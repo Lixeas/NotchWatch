@@ -24,27 +24,10 @@ struct NotchWatchApp: App {
     // custom Shape fills/colors when the view is passed in directly (confirmed AppKit
     // constraint, not a bug in MenuBarProgressLabel). Workaround: pre-render it to an
     // NSImage via ImageRenderer *outside* the label closure, then display that image.
-    @MainActor
-    private func renderPillImage() -> NSImage {
-        let pill: MenuBarProgressLabel
-        if tracker.errorMessage != nil {
-            pill = MenuBarProgressLabel(percentUsed: 1, valueText: "!", overrideColor: UsageColor.red)
-        } else {
-            pill = MenuBarProgressLabel(
-                percentUsed: tracker.percentUsed,
-                valueText: String(format: "$%.0f", tracker.used)
-            )
-        }
-        let renderer = ImageRenderer(content: pill)
-        renderer.scale = NSScreen.main?.backingScaleFactor ?? 2
-        let image = renderer.nsImage ?? NSImage()
-        image.isTemplate = false // sinon la barre de menus aplatit l'image en monochrome
-        return image
-    }
+    // Le rendu lui-meme vit dans UsageTracker.pillImage (recalcule seulement quand la valeur
+    // affichee change, pas a chaque evaluation de ce body).
 
     var body: some Scene {
-        let pillImage = renderPillImage()
-
         MenuBarExtra {
             VStack(spacing: 0) {
                 // Section titre : logo + nom a gauche, refresh a droite
@@ -66,6 +49,7 @@ struct NotchWatchApp: App {
                     }
                     .buttonStyle(.plain)
                     .help("Rafraichir")
+                    .accessibilityLabel("Rafraichir la consommation")
                 }
                 .padding(12)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -77,7 +61,7 @@ struct NotchWatchApp: App {
                 VStack(alignment: .leading, spacing: 10) {
                     if let errorMessage = tracker.errorMessage {
                         Text(errorMessage)
-                            .foregroundColor(UsageColor.red)
+                            .foregroundColor(UsageColor.redText)
                             .font(.hostGrotesk(12))
                     } else if !tracker.extraUsageEnabled {
                         Text("Credits supplementaires non actives sur ce compte.")
@@ -140,7 +124,8 @@ struct NotchWatchApp: App {
                 tracker.startAutoRefresh()
             }
         } label: {
-            Image(nsImage: pillImage)
+            Image(nsImage: tracker.pillImage)
+                .accessibilityLabel(tracker.pillAccessibilityLabel)
         }
         .menuBarExtraStyle(.window)
 

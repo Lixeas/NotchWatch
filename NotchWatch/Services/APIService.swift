@@ -5,6 +5,8 @@ enum APIServiceError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
+        case .httpStatus(401), .httpStatus(403):
+            return "Jeton invalide ou expire. Relancez `claude login`, ou collez un nouveau jeton dans Reglages."
         case .httpStatus(429):
             return "Limite atteinte (429). Reessayez plus tard."
         case .httpStatus(let code):

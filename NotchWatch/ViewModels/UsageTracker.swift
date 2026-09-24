@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 @MainActor
 class UsageTracker: ObservableObject {
@@ -10,6 +11,11 @@ class UsageTracker: ObservableObject {
     @Published var sevenDayUtilization: Double?
     @Published var isLoading = false
     @Published var errorMessage: String?
+
+    // Pill pre-rendu, recalcule uniquement quand la valeur affichee change (fin de fetchUsage),
+    // pas a chaque evaluation de body SwiftUI (isLoading bascule 2x par cycle de refresh sans
+    // que le contenu du pill change).
+    @Published private(set) var pillImage: NSImage
 
     private let keychainManager = KeychainManager()
     private let apiService = APIService()
@@ -28,6 +34,8 @@ class UsageTracker: ObservableObject {
     init() {
         let saved = UserDefaults.standard.integer(forKey: Self.refreshIntervalKey)
         refreshInterval = saved > 0 ? saved : 60
+        pillImage = NSImage()
+        updatePillImage()
     }
 
     func startAutoRefresh() {
@@ -86,6 +94,31 @@ class UsageTracker: ObservableObject {
         }
 
         isLoading = false
+        updatePillImage()
+    }
+
+    /// Description lue par VoiceOver pour l'icone de la barre de menu (seul affichage permanent
+    /// du produit : sans ce label, l'info centrale de NotchWatch est invisible au lecteur d'ecran).
+    var pillAccessibilityLabel: String {
+        if let errorMessage {
+            return "NotchWatch, erreur : \(errorMessage)"
+        }
+        let percent = Int((percentUsed * 100).rounded())
+        return "NotchWatch, \(percent) pourcent des credits utilises, \(String(format: "%.2f", used)) dollars sur \(String(format: "%.2f", limit))"
+    }
+
+    private func updatePillImage() {
+        let pill: MenuBarProgressLabel
+        if errorMessage != nil {
+            pill = MenuBarProgressLabel(percentUsed: 1, valueText: "!", overrideColor: UsageColor.red)
+        } else {
+            pill = MenuBarProgressLabel(percentUsed: percentUsed, valueText: String(format: "$%.0f", used))
+        }
+        let renderer = ImageRenderer(content: pill)
+        renderer.scale = NSScreen.main?.backingScaleFactor ?? 2
+        let image = renderer.nsImage ?? NSImage()
+        image.isTemplate = false // sinon la barre de menus aplatit l'image en monochrome
+        pillImage = image
     }
 
     private static func message(for error: KeychainError) -> String {
