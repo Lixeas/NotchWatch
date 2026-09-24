@@ -17,6 +17,11 @@ jobs:
   release:
     runs-on: self-hosted
     steps:
+      - name: Mask personal info in logs
+        run: |
+          echo "::add-mask::$HOME"
+          echo "::add-mask::$(whoami)"
+
       - uses: actions/checkout@v4
 
       - name: Run tests
