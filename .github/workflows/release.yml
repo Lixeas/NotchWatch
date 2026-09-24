@@ -1,0 +1,114 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build (no leading v), e.g. 1.0.0'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run tests
+        run: swift test
+
+      - name: Resolve version
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build release binary
+        run: swift build -c release
+
+      - name: Assemble ClaudeNotchBar.app
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.ver.outputs.version }}"
+          BIN_PATH=$(swift build -c release --show-bin-path)
+          APP="ClaudeNotchBar.app"
+
+          rm -rf "$APP"
+          mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+          cp "$BIN_PATH/ClaudeNotchBar" "$APP/Contents/MacOS/ClaudeNotchBar"
+
+          # SPM resource bundle (embedded fonts) — copy if present next to the built binary.
+          for bundle in "$BIN_PATH"/*.bundle; do
+            [ -d "$bundle" ] && cp -R "$bundle" "$APP/Contents/Resources/"
+          done
+
+          cat > "$APP/Contents/Info.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>CFBundleExecutable</key><string>ClaudeNotchBar</string>
+            <key>CFBundleIdentifier</key><string>com.lixeas.claudenotchbar</string>
+            <key>CFBundleName</key><string>ClaudeNotchBar</string>
+            <key>CFBundleDisplayName</key><string>ClaudeNotchBar</string>
+            <key>CFBundlePackageType</key><string>APPL</string>
+            <key>CFBundleShortVersionString</key><string>$VERSION</string>
+            <key>CFBundleVersion</key><string>$VERSION</string>
+            <key>LSMinimumSystemVersion</key><string>13.0</string>
+            <key>LSUIElement</key><true/>
+            <key>NSHighResolutionCapable</key><true/>
+          </dict>
+          </plist>
+          PLIST
+
+          # No Apple Developer ID available: ad-hoc sign only. Users get a Gatekeeper
+          # warning on first launch (documented in README) — not notarized.
+          codesign --force --deep --sign - "$APP"
+
+      - name: Create .dmg
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.ver.outputs.version }}"
+          rm -rf dmg-root
+          mkdir dmg-root
+          cp -R ClaudeNotchBar.app dmg-root/
+          ln -s /Applications dmg-root/Applications
+          hdiutil create -volname "ClaudeNotchBar" -srcfolder dmg-root -ov -format UDZO "ClaudeNotchBar-$VERSION.dmg"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          gh release create "v$VERSION" "ClaudeNotchBar-$VERSION.dmg" \
+            --title "ClaudeNotchBar v$VERSION" \
+            --generate-notes \
+            --latest
+
+      - name: Bump Homebrew cask
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.ver.outputs.version }}"
+          SHA=$(shasum -a 256 "ClaudeNotchBar-$VERSION.dmg" | cut -d ' ' -f1)
+
+          git fetch origin main
+          git checkout -B main origin/main
+
+          sed -i '' -E "s/version \".*\"/version \"$VERSION\"/" Casks/claude-notch-bar.rb
+          sed -i '' -E "s/sha256 \".*\"/sha256 \"$SHA\"/" Casks/claude-notch-bar.rb
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/claude-notch-bar.rb
+          git diff --staged --quiet || git commit -m "chore: bump cask to v$VERSION"
+          git push origin main
