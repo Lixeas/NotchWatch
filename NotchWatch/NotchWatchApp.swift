@@ -40,12 +40,18 @@ struct NotchWatchApp: App {
                     Button {
                         Task { await tracker.fetchUsage() }
                     } label: {
-                        if tracker.isLoading {
-                            ProgressView().controlSize(.mini)
-                        } else {
-                            Image(systemName: "arrow.clockwise.circle")
-                                .font(.system(size: 15))
+                        Group {
+                            if tracker.isLoading {
+                                ProgressView().controlSize(.mini)
+                            } else {
+                                Image(systemName: "arrow.clockwise.circle")
+                                    .font(.system(size: 15))
+                            }
                         }
+                        // Fondu seul (pas de mouvement) entre icone et spinner : reste legible
+                        // meme reduction de mouvement activee, sert juste a confirmer l'action.
+                        .transition(.opacity)
+                        .animation(.easeOut(duration: 0.15), value: tracker.isLoading)
                     }
                     .buttonStyle(.plain)
                     .help("Rafraichir")
@@ -58,46 +64,10 @@ struct NotchWatchApp: App {
                 Divider()
 
                 // Section centrale : credits
-                VStack(alignment: .leading, spacing: 10) {
-                    if let errorMessage = tracker.errorMessage {
-                        Text(errorMessage)
-                            .foregroundColor(UsageColor.redText)
-                            .font(.hostGrotesk(12))
-                    } else if !tracker.extraUsageEnabled {
-                        Text("Credits supplementaires non actives sur ce compte.")
-                            .font(.hostGrotesk(12))
-                    } else {
-                        HStack {
-                            Text("Consommation :")
-                            Spacer()
-                            Text(String(format: "$%.2f / $%.2f", tracker.used, tracker.limit))
-                        }
-                        .font(.hostGrotesk(13))
-
-                        UsageProgressBar(percentUsed: tracker.percentUsed)
-                    }
-
-                    if let fiveHour = tracker.fiveHourUtilization {
-                        HStack {
-                            Text("Fenetre 5h :")
-                            Spacer()
-                            Text(String(format: "%.0f%%", fiveHour * 100))
-                        }
-                        .font(.hostGrotesk(11))
-                    }
-
-                    if let sevenDay = tracker.sevenDayUtilization {
-                        HStack {
-                            Text("Fenetre 7j :")
-                            Spacer()
-                            Text(String(format: "%.0f%%", sevenDay * 100))
-                        }
-                        .font(.hostGrotesk(11))
-                    }
-                }
-                .padding(12)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(contentTint)
+                UsageDetailSection(tracker: tracker)
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(contentTint)
 
                 Divider()
 
