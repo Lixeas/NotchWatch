@@ -46,6 +46,12 @@ swift build -c release
 2. Click the menu bar pill to see credit consumption, refresh, or open **Settings**.
 3. In Settings: paste a manual auth token if the automatic one expired, change the refresh interval, or enable launch at login.
 
+### Keychain access prompt
+
+On first launch (and sometimes again after), macOS asks for your login password to let ClaudeNotchBar read Claude Code's stored credentials. **Click "Always Allow", not "Allow"** — "Allow" only grants a one-time read, so the next refresh prompts again.
+
+If you're building from source with `swift run`/`swift build`, expect it to re-prompt after every rebuild even if you picked "Always Allow": each dev build gets a new ad-hoc code signature, and the Keychain's permanent grant is tied to that signature. This goes away once you run the properly signed `.app` (Homebrew or the release `.dmg`).
+
 ## Requirements
 
 - macOS 13.0 (Ventura) or later

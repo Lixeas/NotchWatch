@@ -95,6 +95,9 @@ struct ClaudeNotchBarApp: App {
                 // Section bas : reglages a gauche, quitter a droite
                 HStack {
                     Button("Reglages...") {
+                        // App .accessory (pas d'icone Dock) : ne devient jamais frontmost
+                        // automatiquement, sinon la fenetre s'ouvre sans focus (derriere le Terminal en dev).
+                        NSApp.activate(ignoringOtherApps: true)
                         openWindow(id: "settings")
                     }
                     Spacer()
