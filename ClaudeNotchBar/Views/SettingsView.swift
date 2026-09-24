@@ -24,8 +24,7 @@ struct SettingsView: View {
             // Jeton d'authentification
             VStack(alignment: .leading, spacing: 8) {
                 Text("Jeton d'authentification")
-                    .font(.hostGrotesk(14))
-                    .fontWeight(.semibold)
+                    .font(.hostGroteskSemiBold(14))
 
                 Text("Si le jeton recupere automatiquement (Claude Code) a expire, collez ici un jeton d'acces valide. Videz le champ pour revenir au jeton automatique. Enregistre automatiquement.")
                     .font(.hostGrotesk(12))
@@ -44,8 +43,7 @@ struct SettingsView: View {
             // Rafraichissement automatique
             VStack(alignment: .leading, spacing: 8) {
                 Text("Rafraichissement automatique")
-                    .font(.hostGrotesk(14))
-                    .fontWeight(.semibold)
+                    .font(.hostGroteskSemiBold(14))
 
                 Picker("Intervalle :", selection: $tracker.refreshInterval) {
                     ForEach(Self.intervalOptions, id: \.seconds) { option in
@@ -61,8 +59,7 @@ struct SettingsView: View {
             // Demarrage
             VStack(alignment: .leading, spacing: 8) {
                 Text("Demarrage")
-                    .font(.hostGrotesk(14))
-                    .fontWeight(.semibold)
+                    .font(.hostGroteskSemiBold(14))
 
                 Toggle("Lancer ClaudeNotchBar a l'ouverture de session", isOn: Binding(
                     get: { launchAtLogin },
