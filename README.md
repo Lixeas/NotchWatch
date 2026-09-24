@@ -1,6 +1,6 @@
-# ClaudeNotchBar
+# NotchWatch
 
-[![Test](https://github.com/Lixeas/ClaudeNotchBar/actions/workflows/test.yml/badge.svg)](https://github.com/Lixeas/ClaudeNotchBar/actions/workflows/test.yml)
+[![Test](https://github.com/Lixeas/NotchWatch/actions/workflows/test.yml/badge.svg)](https://github.com/Lixeas/NotchWatch/actions/workflows/test.yml)
 
 A macOS menu bar application for monitoring Anthropic API credit consumption.
 
@@ -17,27 +17,27 @@ A macOS menu bar application for monitoring Anthropic API credit consumption.
 ### Option 1 — Homebrew (recommended)
 
 ```sh
-brew tap Lixeas/claudenotchbar https://github.com/Lixeas/ClaudeNotchBar
-brew install --cask claude-notch-bar
+brew tap Lixeas/notchwatch https://github.com/Lixeas/NotchWatch
+brew install --cask notch-watch
 ```
 
-This installs the latest signed `.dmg` from [GitHub Releases](https://github.com/Lixeas/ClaudeNotchBar/releases) and keeps a Homebrew-managed `ClaudeNotchBar.app` in `/Applications`. To update: `brew upgrade --cask claude-notch-bar`.
+This installs the latest signed `.dmg` from [GitHub Releases](https://github.com/Lixeas/NotchWatch/releases) and keeps a Homebrew-managed `NotchWatch.app` in `/Applications`. To update: `brew upgrade --cask notch-watch`.
 
 ### Option 2 — Manual download
 
-1. Download the latest `ClaudeNotchBar-X.Y.Z.dmg` from the [Releases page](https://github.com/Lixeas/ClaudeNotchBar/releases).
-2. Open the `.dmg` and drag `ClaudeNotchBar.app` into `Applications`.
+1. Download the latest `NotchWatch-X.Y.Z.dmg` from the [Releases page](https://github.com/Lixeas/NotchWatch/releases).
+2. Open the `.dmg` and drag `NotchWatch.app` into `Applications`.
 3. First launch: the app isn't notarized (no Apple Developer Program membership), so Gatekeeper will block it. Either:
    - Right-click the app → **Open** → confirm in the dialog, or
-   - Run `xattr -cr /Applications/ClaudeNotchBar.app` in Terminal once, then open normally.
+   - Run `xattr -cr /Applications/NotchWatch.app` in Terminal once, then open normally.
 
 ### Option 3 — Build from source
 
 ```sh
-git clone https://github.com/Lixeas/ClaudeNotchBar.git
-cd ClaudeNotchBar
+git clone https://github.com/Lixeas/NotchWatch.git
+cd NotchWatch
 swift build -c release
-.build/release/ClaudeNotchBar
+.build/release/NotchWatch
 ```
 
 ## Usage
@@ -48,19 +48,19 @@ swift build -c release
 
 ### Keychain access prompt
 
-On first launch (and sometimes again after), macOS asks for your login password to let ClaudeNotchBar read Claude Code's stored credentials. **Click "Always Allow", not "Allow"** — "Allow" only grants a one-time read, so the next refresh prompts again.
+On first launch (and sometimes again after), macOS asks for your login password to let NotchWatch read Claude Code's stored credentials. **Click "Always Allow", not "Allow"** — "Allow" only grants a one-time read, so the next refresh prompts again.
 
 If you're building from source with `swift run`/`swift build`, expect it to re-prompt after every rebuild even if you picked "Always Allow": each dev build gets a new ad-hoc code signature, and the Keychain's permanent grant is tied to that signature. This goes away once you run the properly signed `.app` (Homebrew or the release `.dmg`).
 
 ### Auth token expired
 
-ClaudeNotchBar reuses Claude Code CLI's own login, so the fix is usually one command:
+NotchWatch reuses Claude Code CLI's own login, so the fix is usually one command:
 
 ```sh
 claude login
 ```
 
-This refreshes the token Claude Code stores in the Keychain — ClaudeNotchBar picks it up automatically on the next refresh, no further action needed.
+This refreshes the token Claude Code stores in the Keychain — NotchWatch picks it up automatically on the next refresh, no further action needed.
 
 If you can't run `claude login` (no CLI on this machine, different account, etc.), paste a token manually in **Settings → Jeton d'authentification**:
 
@@ -71,7 +71,7 @@ If you can't run `claude login` (no CLI on this machine, different account, etc.
 2. Paste it into the token field in Settings — it saves automatically as you type, no button to click.
 3. Leave the field empty to go back to the automatic Claude Code token.
 
-Bonus: once a manual token is set, ClaudeNotchBar reads it from its own Keychain entry instead of Claude Code's — no more cross-app Keychain permission prompts.
+Bonus: once a manual token is set, NotchWatch reads it from its own Keychain entry instead of Claude Code's — no more cross-app Keychain permission prompts.
 
 ## Requirements
 
@@ -81,7 +81,7 @@ Bonus: once a manual token is set, ClaudeNotchBar reads it from its own Keychain
 ## Development
 
 - `swift build` / `swift test` — build and run the unit tests locally (or let the [Test workflow](.github/workflows/test.yml) do it on a real macOS runner on every push/PR).
-- `.github/workflows/release.yml` — tag `vX.Y.Z` and push it (or run manually via `workflow_dispatch`) to build the `.app`, package a `.dmg`, publish a GitHub Release, and bump `Casks/claude-notch-bar.rb` automatically.
+- `.github/workflows/release.yml` — tag `vX.Y.Z` and push it (or run manually via `workflow_dispatch`) to build the `.app`, package a `.dmg`, publish a GitHub Release, and bump `Casks/notch-watch.rb` automatically.
 
 ## Contributing
 

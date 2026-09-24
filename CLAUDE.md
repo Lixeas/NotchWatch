@@ -2,7 +2,7 @@
 
 ## Overview
 
-ClaudeNotchBar is a macOS application designed to monitor Anthropic API credit consumption for Enterprise accounts. It provides a visual representation of your credit usage in the menu bar (Notch area).
+NotchWatch is a macOS application designed to monitor Anthropic API credit consumption for Enterprise accounts. It provides a visual representation of your credit usage in the menu bar (Notch area).
 
 ## Technical Architecture
 

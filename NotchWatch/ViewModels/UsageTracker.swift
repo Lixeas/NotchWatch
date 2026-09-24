@@ -14,7 +14,7 @@ class UsageTracker: ObservableObject {
     private let keychainManager = KeychainManager()
     private let apiService = APIService()
     private var refreshTask: Task<Void, Never>?
-    private static let refreshIntervalKey = "ClaudeNotchBar.refreshIntervalSeconds"
+    private static let refreshIntervalKey = "NotchWatch.refreshIntervalSeconds"
 
     /// Secondes entre deux rafraichissements auto. Modifiable depuis Reglages ; persiste en UserDefaults.
     @Published var refreshInterval: Int {

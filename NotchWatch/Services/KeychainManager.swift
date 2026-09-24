@@ -9,7 +9,7 @@ enum KeychainError: Error {
 
 struct KeychainManager {
     private let serviceName = "Claude Code-credentials"
-    private let manualTokenService = "ClaudeNotchBar-ManualToken"
+    private let manualTokenService = "NotchWatch-ManualToken"
 
     /// Jeton manuel (Reglages) s'il existe, sinon le jeton OAuth de Claude Code.
     func resolveAccessToken() throws -> String {

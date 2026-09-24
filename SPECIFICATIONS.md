@@ -1,7 +1,7 @@
-# ClaudeNotchBar - Specifications
+# NotchWatch - Specifications
 
 ## Overview
-ClaudeNotchBar is a macOS application that displays Anthropic API usage credits in the menu bar (Notch area). It provides real-time monitoring of your Anthropic API credit consumption for Enterprise accounts.
+NotchWatch is a macOS application that displays Anthropic API usage credits in the menu bar (Notch area). It provides real-time monitoring of your Anthropic API credit consumption for Enterprise accounts.
 
 ## Technical Specifications
 

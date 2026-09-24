@@ -2,25 +2,25 @@
 import PackageDescription
 
 let package = Package(
-    name: "ClaudeNotchBar",
+    name: "NotchWatch",
     platforms: [
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "ClaudeNotchBar", targets: ["ClaudeNotchBar"])
+        .executable(name: "NotchWatch", targets: ["NotchWatch"])
     ],
     targets: [
         .executableTarget(
-            name: "ClaudeNotchBar",
-            path: "ClaudeNotchBar",
+            name: "NotchWatch",
+            path: "NotchWatch",
             resources: [
                 .copy("Resources/Fonts")
             ]
         ),
         .testTarget(
-            name: "ClaudeNotchBarTests",
-            dependencies: ["ClaudeNotchBar"],
-            path: "ClaudeNotchBarTests"
+            name: "NotchWatchTests",
+            dependencies: ["NotchWatch"],
+            path: "NotchWatchTests"
         )
     ]
 )
