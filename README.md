@@ -52,6 +52,27 @@ On first launch (and sometimes again after), macOS asks for your login password 
 
 If you're building from source with `swift run`/`swift build`, expect it to re-prompt after every rebuild even if you picked "Always Allow": each dev build gets a new ad-hoc code signature, and the Keychain's permanent grant is tied to that signature. This goes away once you run the properly signed `.app` (Homebrew or the release `.dmg`).
 
+### Auth token expired
+
+ClaudeNotchBar reuses Claude Code CLI's own login, so the fix is usually one command:
+
+```sh
+claude login
+```
+
+This refreshes the token Claude Code stores in the Keychain — ClaudeNotchBar picks it up automatically on the next refresh, no further action needed.
+
+If you can't run `claude login` (no CLI on this machine, different account, etc.), paste a token manually in **Settings → Jeton d'authentification**:
+
+1. Get a fresh OAuth access token — either from `claude login` on any machine, or by extracting the one Claude Code already has stored:
+   ```sh
+   security find-generic-password -s "Claude Code-credentials" -w | python3 -c "import json,sys; print(json.load(sys.stdin)['claudeAiOauth']['accessToken'])"
+   ```
+2. Paste it into the token field in Settings — it saves automatically as you type, no button to click.
+3. Leave the field empty to go back to the automatic Claude Code token.
+
+Bonus: once a manual token is set, ClaudeNotchBar reads it from its own Keychain entry instead of Claude Code's — no more cross-app Keychain permission prompts.
+
 ## Requirements
 
 - macOS 13.0 (Ventura) or later
