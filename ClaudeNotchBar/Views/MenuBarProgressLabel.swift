@@ -25,8 +25,7 @@ struct MenuBarProgressLabel: View {
             .clipShape(RoundedRectangle(cornerRadius: height / 2))
 
             Text(valueText)
-                .font(.hostGrotesk(10))
-                .fontWeight(.bold)
+                .font(.hostGroteskBold(10))
                 .monospacedDigit()
                 .foregroundStyle(.white)
                 .shadow(color: .black.opacity(0.6), radius: 1)
