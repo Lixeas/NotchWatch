@@ -6,6 +6,8 @@ import SwiftUI
 struct UsageProgressBar: View {
     let percentUsed: Double
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     private static let gradient = Gradient(stops: [
         .init(color: UsageColor.green, location: 0.0),
         .init(color: UsageColor.orange, location: 0.5),
@@ -25,6 +27,9 @@ struct UsageProgressBar: View {
                     .frame(width: geo.size.width)
                     .frame(width: geo.size.width * fillRatio, alignment: .leading)
                     .clipped()
+                    // Le remplissage glisse vers sa nouvelle valeur au lieu de sauter : l'aiguille
+                    // d'un instrument de bord se deplace, elle ne se teleporte pas.
+                    .animation(reduceMotion ? nil : .easeOut(duration: 0.35), value: percentUsed)
             }
             .clipShape(RoundedRectangle(cornerRadius: 3))
         }
