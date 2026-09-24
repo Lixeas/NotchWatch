@@ -7,6 +7,7 @@ struct SettingsView: View {
     @State private var tokenInput: String = ""
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var errorMessage: String?
+    @State private var saveTask: Task<Void, Never>?
 
     private let keychainManager = KeychainManager()
 
@@ -34,7 +35,14 @@ struct SettingsView: View {
                 SecureField("sk-ant-oat01-...", text: $tokenInput)
                     .textFieldStyle(.roundedBorder)
                     .onChange(of: tokenInput) { newValue in
-                        saveToken(newValue)
+                        // Debounce : evite une ecriture Keychain (SecItemUpdate/Add) a chaque
+                        // frappe, et n'enregistre pas les etats intermediaires d'un coller/tape.
+                        saveTask?.cancel()
+                        saveTask = Task {
+                            try? await Task.sleep(nanoseconds: 400_000_000)
+                            guard !Task.isCancelled else { return }
+                            saveToken(newValue)
+                        }
                     }
             }
 
@@ -71,7 +79,7 @@ struct SettingsView: View {
                 Divider()
                 Text(errorMessage)
                     .font(.hostGrotesk(12))
-                    .foregroundColor(UsageColor.red)
+                    .foregroundColor(UsageColor.redText)
             }
 
             Divider()
