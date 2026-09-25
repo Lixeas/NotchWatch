@@ -97,6 +97,10 @@ enum Strings {
         l == .en ? "Language" : "Langue"
     }
 
+    static func settingsWindowTitle(_ l: AppLanguage) -> String {
+        l == .en ? "Settings" : "Reglages"
+    }
+
     static func versionLabel(_ version: String, _ l: AppLanguage) -> String {
         "NotchWatch \u{2022} version \(version)"
     }
