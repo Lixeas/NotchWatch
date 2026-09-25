@@ -59,10 +59,8 @@ enum Strings {
         l == .en ? "5h window:" : "Fenetre 5h :"
     }
 
-    // Anthropic's usage API does not return real billing-period dates (extra_usage has no
-    // period_start/period_end) -- this is a calendar-month approximation, labeled as such.
     static func billingCycleLabel(_ l: AppLanguage) -> String {
-        l == .en ? "Billing cycle (est.):" : "Cycle facturation (estim.) :"
+        l == .en ? "Billing cycle:" : "Cycle facturation :"
     }
 
     static func sevenDayWindowLabel(_ l: AppLanguage) -> String {
