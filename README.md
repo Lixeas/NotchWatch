@@ -27,10 +27,11 @@
 
 ```sh
 brew tap Lixeas/notchwatch https://github.com/Lixeas/NotchWatch
+brew trust --cask lixeas/notchwatch/notch-watch
 brew install --cask notch-watch
 ```
 
-This installs the latest signed `.dmg` from [GitHub Releases](https://github.com/Lixeas/NotchWatch/releases) and keeps a Homebrew-managed `NotchWatch.app` in `/Applications`. To update: `brew upgrade --cask notch-watch`.
+Homebrew 6.0+ requires explicit trust for non-official taps (`brew trust`) — one-time, before the first install. This installs the latest signed `.dmg` from [GitHub Releases](https://github.com/Lixeas/NotchWatch/releases) and keeps a Homebrew-managed `NotchWatch.app` in `/Applications`. To update: `brew upgrade --cask notch-watch`.
 
 ### Option 2 — Manual download
 
