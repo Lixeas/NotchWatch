@@ -1,7 +1,7 @@
 cask "notch-watch" do
-  version "0.3.0"
+  version "0.3.1"
   # Placeholder — overwritten automatically by .github/workflows/release.yml on every tagged release.
-  sha256 "8d8bc24ade1c4685cd0789dd2eecad2f1ea2a5d4e45dd739c6a46412f3f1b1fd"
+  sha256 "485351b04369ec002d99cd01fde12f4cb8b915840d45b1dc074072819f07fb76"
 
   url "https://github.com/Lixeas/NotchWatch/releases/download/v#{version}/NotchWatch-#{version}.dmg"
   name "NotchWatch"
