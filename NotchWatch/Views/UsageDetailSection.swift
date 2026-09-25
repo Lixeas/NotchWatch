@@ -84,6 +84,6 @@ struct UsageDetailSection: View {
         // Template plutot que dateStyle : exclut l'annee (jour + mois seulement) tout en
         // laissant ICU choisir l'ordre localise ("1-30 sept." FR / "Sep 1 - 30" EN).
         formatter.dateTemplate = "MMMd"
-        return formatter.string(from: interval.start, to: lastDay) ?? ""
+        return formatter.string(from: interval.start, to: lastDay)
     }
 }
