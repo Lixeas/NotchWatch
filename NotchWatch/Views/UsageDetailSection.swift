@@ -31,6 +31,14 @@ struct UsageDetailSection: View {
                 .font(.hostGrotesk(13))
 
                 UsageProgressBar(percentUsed: tracker.percentUsed)
+
+                HStack {
+                    Text(Strings.billingCycleLabel(lang))
+                    Spacer()
+                    Text(Self.billingCycleRange(for: lang))
+                }
+                .font(.hostGrotesk(11))
+                .foregroundColor(.secondary)
             }
 
             if let fiveHour = tracker.fiveHourUtilization {
@@ -59,5 +67,22 @@ struct UsageDetailSection: View {
         .animation(reduceMotion ? nil : .easeOut(duration: 0.35), value: tracker.used)
         .animation(reduceMotion ? nil : .easeOut(duration: 0.35), value: tracker.errorMessage)
         .animation(reduceMotion ? nil : .easeOut(duration: 0.35), value: tracker.extraUsageEnabled)
+    }
+
+    /// Approximation mois-calendaire : l'API n'expose aucune date de cycle reelle
+    /// (`extra_usage` n'a pas de period_start/period_end). Recalcule a chaque affichage,
+    /// pas mis en cache : couvre le changement de mois sans logique de rafraichissement dediee.
+    private static func billingCycleRange(for lang: AppLanguage) -> String {
+        let calendar = Calendar.current
+        let now = Date()
+        guard let interval = calendar.dateInterval(of: .month, for: now),
+              let lastDay = calendar.date(byAdding: .day, value: -1, to: interval.end) else {
+            return ""
+        }
+        let formatter = DateIntervalFormatter()
+        formatter.locale = Locale(identifier: lang == .en ? "en_US" : "fr_FR")
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: interval.start, to: lastDay) ?? ""
     }
 }
