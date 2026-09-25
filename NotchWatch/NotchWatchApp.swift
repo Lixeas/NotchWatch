@@ -33,8 +33,7 @@ struct NotchWatchApp: App {
             VStack(spacing: 0) {
                 // Section titre : logo + nom a gauche, refresh a droite
                 HStack(spacing: 8) {
-                    Image(systemName: "cpu")
-                        .foregroundColor(.secondary)
+                    BrandMark()
                     Text("NotchWatch")
                         .font(.hostGroteskBold(12))
                     Spacer()

@@ -1,3 +1,5 @@
+<img src="NotchWatch/Resources/Images/notchwatch-corbeau-16-modified.svg" width="64" height="64" alt="NotchWatch logo">
+
 # NotchWatch
 
 [![Test](https://github.com/Lixeas/NotchWatch/actions/workflows/test.yml/badge.svg)](https://github.com/Lixeas/NotchWatch/actions/workflows/test.yml)
