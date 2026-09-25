@@ -68,12 +68,20 @@ jobs:
             <key>CFBundlePackageType</key><string>APPL</string>
             <key>CFBundleShortVersionString</key><string>$VERSION</string>
             <key>CFBundleVersion</key><string>$VERSION</string>
+            <key>CFBundleIconFile</key><string>AppIcon</string>
             <key>LSMinimumSystemVersion</key><string>13.0</string>
             <key>LSUIElement</key><true/>
             <key>NSHighResolutionCapable</key><true/>
           </dict>
           </plist>
           PLIST
+
+          # Rasterize the vector brand mark at every required size (NSImage renders the SVG as
+          # vector, not a blown-up 16px bitmap) and pack it into a proper multi-resolution .icns.
+          swift Scripts/generate-icon.swift \
+            NotchWatch/Resources/Images/notchwatch-corbeau-16-modified.svg \
+            AppIcon.iconset
+          iconutil -c icns AppIcon.iconset -o "$APP/Contents/Resources/AppIcon.icns"
 
           # No Apple Developer ID available: ad-hoc sign only. Users get a Gatekeeper
           # warning on first launch (documented in README) — not notarized.
