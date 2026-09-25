@@ -1,43 +1,37 @@
 import SwiftUI
 
-/// Icone repliee de la menu bar : barre de progression avec la valeur au centre.
-/// Couleur : vert < 50%, orange < 80%, rouge au-dela (limite proche/depassee).
+/// Icone repliee de la menu bar : pourcentage colore + point + montant, sur un fond neutre
+/// fixe (pas de remplissage proportionnel). Le pourcentage exact porte lui-meme le signal de
+/// couleur (Regle Jamais-Seule : la couleur n'est jamais seule, le chiffre l'accompagne toujours).
 struct MenuBarProgressLabel: View {
     let percentUsed: Double
-    let valueText: String
+    let percentText: String
+    let valueText: String?
     var overrideColor: Color?
 
-    private let width: CGFloat = 54
     private let height: CGFloat = 16
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: height / 2)
-                .fill(Color.primary.opacity(0.12))
+        HStack(spacing: 4) {
+            Text(percentText)
+                .foregroundStyle(percentColor)
 
-            HStack(spacing: 0) {
-                RoundedRectangle(cornerRadius: height / 2)
-                    .fill(barColor)
-                    .frame(width: width * fillRatio)
-                Spacer(minLength: 0)
+            if let valueText {
+                Text("\u{2022}")
+                    .foregroundStyle(Color.primary.opacity(0.35))
+                Text(valueText)
+                    .foregroundStyle(Color.primary)
             }
-            .frame(width: width, height: height)
-            .clipShape(RoundedRectangle(cornerRadius: height / 2))
-
-            Text(valueText)
-                .font(.hostGroteskBold(10))
-                .monospacedDigit()
-                .foregroundStyle(.white)
-                .shadow(color: .black.opacity(0.6), radius: 1)
         }
-        .frame(width: width, height: height)
+        .font(.hostGroteskBold(10))
+        .monospacedDigit()
+        .padding(.horizontal, 8)
+        .frame(height: height)
+        .background(Capsule().fill(Color.primary.opacity(0.12)))
+        .fixedSize()
     }
 
-    private var fillRatio: CGFloat {
-        CGFloat(min(max(percentUsed, 0), 1))
-    }
-
-    private var barColor: Color {
-        overrideColor ?? UsageColor.forPercent(percentUsed)
+    private var percentColor: Color {
+        overrideColor ?? UsageColor.textColor(forPercent: percentUsed)
     }
 }
