@@ -14,7 +14,8 @@ let package = Package(
             name: "NotchWatch",
             path: "NotchWatch",
             resources: [
-                .copy("Resources/Fonts")
+                .copy("Resources/Fonts"),
+                .copy("Resources/Images")
             ]
         ),
         .testTarget(
