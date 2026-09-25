@@ -8,7 +8,7 @@ cask "notch-watch" do
   desc "Menu bar app that monitors Anthropic API credit usage"
   homepage "https://github.com/Lixeas/NotchWatch"
 
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
 
   app "NotchWatch.app"
 
