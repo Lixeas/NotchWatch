@@ -6,7 +6,7 @@
 <p align="center">
   <a href="https://github.com/Lixeas/NotchWatch/actions/workflows/test.yml"><img src="https://github.com/Lixeas/NotchWatch/actions/workflows/test.yml/badge.svg" alt="Test"></a>
   <a href="https://github.com/Lixeas/NotchWatch/actions/workflows/release.yml"><img src="https://github.com/Lixeas/NotchWatch/actions/workflows/release.yml/badge.svg" alt="Release"></a>
-  <a href="https://github.com/Lixeas/NotchWatch/releases/latest"><img src="https://img.shields.io/github/v/release/Lixeas/NotchWatch?label=version" alt="Latest release"></a>
+  <a href="https://github.com/Lixeas/NotchWatch/releases"><img src="https://img.shields.io/github/v/release/Lixeas/NotchWatch?label=version" alt="Latest release"></a>
 </p>
 
 <p align="center">See your Anthropic API credit usage at a glance from the macOS menu bar — no dashboard, no dock icon, just a signal you read in passing.</p>
