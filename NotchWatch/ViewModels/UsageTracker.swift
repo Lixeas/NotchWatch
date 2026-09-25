@@ -116,9 +116,14 @@ class UsageTracker: ObservableObject {
     private func updatePillImage() {
         let pill: MenuBarProgressLabel
         if errorMessage != nil {
-            pill = MenuBarProgressLabel(percentUsed: 1, valueText: "!", overrideColor: UsageColor.red)
+            pill = MenuBarProgressLabel(percentUsed: 1, percentText: "!", valueText: nil, overrideColor: UsageColor.red)
         } else {
-            pill = MenuBarProgressLabel(percentUsed: percentUsed, valueText: String(format: "$%.0f", used))
+            let percent = Int((percentUsed * 100).rounded())
+            pill = MenuBarProgressLabel(
+                percentUsed: percentUsed,
+                percentText: "\(percent)%",
+                valueText: String(format: "$%.2f", used)
+            )
         }
         let renderer = ImageRenderer(content: pill)
         renderer.scale = NSScreen.main?.backingScaleFactor ?? 2
