@@ -1,0 +1,56 @@
+name: Bug report
+description: Something in NotchWatch is broken or behaves unexpectedly
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened
+      description: What did you expect instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Settings
+        2. ...
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: NotchWatch version
+      description: Settings window, bottom of the panel
+      placeholder: "0.2.0"
+    validations:
+      required: true
+
+  - type: input
+    id: macos-version
+    attributes:
+      label: macOS version
+      placeholder: "macOS 15.1 (Sequoia)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: Installed via
+      options:
+        - Homebrew
+        - Manual .dmg
+        - Built from source
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console output (if relevant)
+      description: Console.app, filtered on "NotchWatch", around the time of the bug
+      render: shell
