@@ -13,6 +13,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 struct NotchWatchApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var tracker = UsageTracker()
+    @ObservedObject private var languageManager = LanguageManager.shared
     @Environment(\.openWindow) private var openWindow
 
     // Color.gray est une teinte fixe (ne suit pas clair/sombre) : Color.primary s'adapte
@@ -54,8 +55,8 @@ struct NotchWatchApp: App {
                         .animation(.easeOut(duration: 0.15), value: tracker.isLoading)
                     }
                     .buttonStyle(.plain)
-                    .help("Rafraichir")
-                    .accessibilityLabel("Rafraichir la consommation")
+                    .help(Strings.refresh(languageManager.language))
+                    .accessibilityLabel(Strings.refreshAccessibilityLabel(languageManager.language))
                 }
                 .padding(12)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -73,14 +74,14 @@ struct NotchWatchApp: App {
 
                 // Section bas : reglages a gauche, quitter a droite
                 HStack {
-                    Button("Reglages...") {
+                    Button(Strings.settingsButton(languageManager.language)) {
                         // App .accessory (pas d'icone Dock) : ne devient jamais frontmost
                         // automatiquement, sinon la fenetre s'ouvre sans focus (derriere le Terminal en dev).
                         NSApp.activate(ignoringOtherApps: true)
                         openWindow(id: "settings")
                     }
                     Spacer()
-                    Button("Quitter") {
+                    Button(Strings.quitButton(languageManager.language)) {
                         NSApplication.shared.terminate(nil)
                     }
                 }
