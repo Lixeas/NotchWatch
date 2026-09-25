@@ -100,7 +100,7 @@ struct NotchWatchApp: App {
         }
         .menuBarExtraStyle(.window)
 
-        Window("Reglages", id: "settings") {
+        Window(Strings.settingsWindowTitle(languageManager.language), id: "settings") {
             SettingsView()
                 .environmentObject(tracker)
         }
