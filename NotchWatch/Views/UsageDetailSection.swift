@@ -4,10 +4,13 @@ import SwiftUI
 /// `accessibilityReduceMotion` (uniquement disponible depuis une View, pas depuis la Scene App).
 struct UsageDetailSection: View {
     @ObservedObject var tracker: UsageTracker
+    @ObservedObject private var languageManager = LanguageManager.shared
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
+        let lang = languageManager.language
+
         VStack(alignment: .leading, spacing: 10) {
             if let errorMessage = tracker.errorMessage {
                 Text(errorMessage)
@@ -15,12 +18,12 @@ struct UsageDetailSection: View {
                     .font(.hostGrotesk(12))
                     .transition(.opacity)
             } else if !tracker.extraUsageEnabled {
-                Text("Credits supplementaires non actives sur ce compte.")
+                Text(Strings.extraUsageDisabled(lang))
                     .font(.hostGrotesk(12))
                     .transition(.opacity)
             } else {
                 HStack {
-                    Text("Consommation :")
+                    Text(Strings.consumptionLabel(lang))
                     Spacer()
                     Text(String(format: "$%.2f / $%.2f", tracker.used, tracker.limit))
                         .contentTransition(.numericText())
@@ -32,7 +35,7 @@ struct UsageDetailSection: View {
 
             if let fiveHour = tracker.fiveHourUtilization {
                 HStack {
-                    Text("Fenetre 5h :")
+                    Text(Strings.fiveHourWindowLabel(lang))
                     Spacer()
                     Text(String(format: "%.0f%%", fiveHour * 100))
                         .contentTransition(.numericText())
@@ -42,7 +45,7 @@ struct UsageDetailSection: View {
 
             if let sevenDay = tracker.sevenDayUtilization {
                 HStack {
-                    Text("Fenetre 7j :")
+                    Text(Strings.sevenDayWindowLabel(lang))
                     Spacer()
                     Text(String(format: "%.0f%%", sevenDay * 100))
                         .contentTransition(.numericText())

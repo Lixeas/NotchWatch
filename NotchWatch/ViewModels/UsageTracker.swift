@@ -90,7 +90,7 @@ class UsageTracker: ObservableObject {
         } catch let error as APIServiceError {
             errorMessage = error.localizedDescription
         } catch {
-            errorMessage = "Erreur reseau : \(error.localizedDescription)"
+            errorMessage = Strings.networkErrorPrefix(error.localizedDescription, LanguageManager.shared.language)
         }
 
         isLoading = false
@@ -100,11 +100,17 @@ class UsageTracker: ObservableObject {
     /// Description lue par VoiceOver pour l'icone de la barre de menu (seul affichage permanent
     /// du produit : sans ce label, l'info centrale de NotchWatch est invisible au lecteur d'ecran).
     var pillAccessibilityLabel: String {
+        let lang = LanguageManager.shared.language
         if let errorMessage {
-            return "NotchWatch, erreur : \(errorMessage)"
+            return Strings.pillErrorLabel(errorMessage, lang)
         }
         let percent = Int((percentUsed * 100).rounded())
-        return "NotchWatch, \(percent) pourcent des credits utilises, \(String(format: "%.2f", used)) dollars sur \(String(format: "%.2f", limit))"
+        return Strings.pillUsageLabel(
+            percent: percent,
+            used: String(format: "%.2f", used),
+            limit: String(format: "%.2f", limit),
+            lang
+        )
     }
 
     private func updatePillImage() {
@@ -122,13 +128,14 @@ class UsageTracker: ObservableObject {
     }
 
     private static func message(for error: KeychainError) -> String {
+        let lang = LanguageManager.shared.language
         switch error {
         case .itemNotFound:
-            return "Non connecte. Lancez `claude login` dans le terminal."
+            return Strings.notConnected(lang)
         case .invalidData:
-            return "Jeton illisible. Relancez `claude login`."
+            return Strings.tokenUnreadable(lang)
         case .unexpectedStatus(let status):
-            return "Erreur Trousseau (code \(status))."
+            return Strings.keychainErrorCode(status, lang)
         }
     }
 }

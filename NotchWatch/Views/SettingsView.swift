@@ -3,6 +3,7 @@ import ServiceManagement
 
 struct SettingsView: View {
     @EnvironmentObject private var tracker: UsageTracker
+    @ObservedObject private var languageManager = LanguageManager.shared
 
     @State private var tokenInput: String = ""
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
@@ -20,14 +21,16 @@ struct SettingsView: View {
     ]
 
     var body: some View {
+        let lang = languageManager.language
+
         VStack(alignment: .leading, spacing: 16) {
 
             // Jeton d'authentification
             VStack(alignment: .leading, spacing: 8) {
-                Text("Jeton d'authentification")
+                Text(Strings.authTokenTitle(lang))
                     .font(.hostGroteskSemiBold(14))
 
-                Text("Si le jeton recupere automatiquement (Claude Code) a expire, collez ici un jeton d'acces valide. Videz le champ pour revenir au jeton automatique. Enregistre automatiquement.")
+                Text(Strings.authTokenDescription(lang))
                     .font(.hostGrotesk(12))
                     .foregroundColor(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -50,10 +53,10 @@ struct SettingsView: View {
 
             // Rafraichissement automatique
             VStack(alignment: .leading, spacing: 8) {
-                Text("Rafraichissement automatique")
+                Text(Strings.autoRefreshTitle(lang))
                     .font(.hostGroteskSemiBold(14))
 
-                Picker("Intervalle :", selection: $tracker.refreshInterval) {
+                Picker(Strings.intervalLabel(lang), selection: $tracker.refreshInterval) {
                     ForEach(Self.intervalOptions, id: \.seconds) { option in
                         Text(option.label).tag(option.seconds)
                     }
@@ -66,13 +69,30 @@ struct SettingsView: View {
 
             // Demarrage
             VStack(alignment: .leading, spacing: 8) {
-                Text("Demarrage")
+                Text(Strings.startupTitle(lang))
                     .font(.hostGroteskSemiBold(14))
 
-                Toggle("Lancer NotchWatch a l'ouverture de session", isOn: Binding(
+                Toggle(Strings.launchAtLoginLabel(lang), isOn: Binding(
                     get: { launchAtLogin },
                     set: { setLaunchAtLogin($0) }
                 ))
+            }
+
+            Divider()
+
+            // Langue
+            VStack(alignment: .leading, spacing: 8) {
+                Text(Strings.languageTitle(lang))
+                    .font(.hostGroteskSemiBold(14))
+
+                Picker(Strings.languageTitle(lang), selection: $languageManager.language) {
+                    ForEach(AppLanguage.allCases) { option in
+                        Text(option.label).tag(option)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .frame(maxWidth: 200)
             }
 
             if let errorMessage {
@@ -84,7 +104,7 @@ struct SettingsView: View {
 
             Divider()
 
-            Text("NotchWatch \u{2022} version \(AppVersion.string)")
+            Text(Strings.versionLabel(AppVersion.string, lang))
                 .font(.hostGrotesk(11))
                 .foregroundColor(.secondary)
         }
@@ -102,7 +122,7 @@ struct SettingsView: View {
             try keychainManager.saveManualToken(token)
             errorMessage = nil
         } catch {
-            errorMessage = "Erreur jeton : \(error.localizedDescription)"
+            errorMessage = Strings.tokenErrorPrefix(error.localizedDescription, languageManager.language)
         }
     }
 
@@ -119,7 +139,7 @@ struct SettingsView: View {
             launchAtLogin = enabled
             errorMessage = nil
         } catch {
-            errorMessage = "Erreur demarrage auto : \(error.localizedDescription)"
+            errorMessage = Strings.startupErrorPrefix(error.localizedDescription, languageManager.language)
             launchAtLogin = SMAppService.mainApp.status == .enabled
         }
     }

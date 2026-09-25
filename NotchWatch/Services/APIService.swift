@@ -4,13 +4,14 @@ enum APIServiceError: LocalizedError {
     case httpStatus(Int)
 
     var errorDescription: String? {
+        let lang = LanguageManager.shared.language
         switch self {
         case .httpStatus(401), .httpStatus(403):
-            return "Jeton invalide ou expire. Relancez `claude login`, ou collez un nouveau jeton dans Reglages."
+            return Strings.tokenInvalidOrExpired(lang)
         case .httpStatus(429):
-            return "Limite atteinte (429). Reessayez plus tard."
+            return Strings.rateLimited(lang)
         case .httpStatus(let code):
-            return "Le serveur a repondu avec le code \(code)."
+            return Strings.serverErrorCode(code, lang)
         }
     }
 }
