@@ -1,18 +1,25 @@
-<img src="NotchWatch/Resources/Images/notchwatch-corbeau-16-modified.svg" width="64" height="64" alt="NotchWatch logo">
+<h1 align="center">
+  <img src="NotchWatch/Resources/Images/notchwatch-corbeau-16-modified.svg" width="40" height="40" valign="middle" alt="">
+  NotchWatch
+</h1>
 
-# NotchWatch
+<p align="center">
+  <a href="https://github.com/Lixeas/NotchWatch/actions/workflows/test.yml"><img src="https://github.com/Lixeas/NotchWatch/actions/workflows/test.yml/badge.svg" alt="Test"></a>
+  <a href="https://github.com/Lixeas/NotchWatch/actions/workflows/release.yml"><img src="https://github.com/Lixeas/NotchWatch/actions/workflows/release.yml/badge.svg" alt="Release"></a>
+  <a href="https://github.com/Lixeas/NotchWatch/releases/latest"><img src="https://img.shields.io/github/v/release/Lixeas/NotchWatch?label=version" alt="Latest release"></a>
+</p>
 
-[![Test](https://github.com/Lixeas/NotchWatch/actions/workflows/test.yml/badge.svg)](https://github.com/Lixeas/NotchWatch/actions/workflows/test.yml)
-
-A macOS menu bar application for monitoring Anthropic API credit consumption.
+<p align="center">See your Anthropic API credit usage at a glance from the macOS menu bar — no dashboard, no dock icon, just a signal you read in passing.</p>
 
 ## Features
 
-- Menu bar icon shown as a progress pill (color-coded: green / orange / red as you approach your limit)
-- Real-time display of Anthropic API credit usage, 5h/7-day rate-limit windows
+- Menu bar shows usage as colored text — `42% • $8.40` — the percentage itself carries the status color (green / orange / red as you approach your limit), no separate progress bar
+- Estimated billing cycle date range in the dropdown (calendar-month approximation — Anthropic's usage API doesn't expose the real billing period)
+- English / French toggle in Settings, applies app-wide immediately, defaults to English
 - Secure OAuth token retrieval from the macOS Keychain (reuses Claude Code's login), with a manual override in Settings if it expires
 - Automatic refresh on a configurable interval
 - Launch at login (optional)
+- VoiceOver labels on the menu bar icon and controls; motion respects Reduce Motion
 
 ## Installation
 
@@ -44,9 +51,9 @@ swift build -c release
 
 ## Usage
 
-1. Launch the application — it lives only in the menu bar (no Dock icon).
-2. Click the menu bar pill to see credit consumption, refresh, or open **Settings**.
-3. In Settings: paste a manual auth token if the automatic one expired, change the refresh interval, or enable launch at login.
+1. Launch the application — it lives only in the menu bar (no Dock icon), showing usage as `<percent>% • $<amount>`.
+2. Click the menu bar item to see full consumption details, the estimated billing cycle, refresh, or open **Settings**.
+3. In Settings: paste a manual auth token if the automatic one expired, change the refresh interval, switch language (English/French), or enable launch at login.
 
 ### Keychain access prompt
 
@@ -64,13 +71,13 @@ claude login
 
 This refreshes the token Claude Code stores in the Keychain — NotchWatch picks it up automatically on the next refresh, no further action needed.
 
-If you can't run `claude login` (no CLI on this machine, different account, etc.), paste a token manually in **Settings → Jeton d'authentification**:
+If you can't run `claude login` (no CLI on this machine, different account, etc.), paste a token manually in **Settings → Authentication Token**:
 
 1. Get a fresh OAuth access token — either from `claude login` on any machine, or by extracting the one Claude Code already has stored:
    ```sh
    security find-generic-password -s "Claude Code-credentials" -w | python3 -c "import json,sys; print(json.load(sys.stdin)['claudeAiOauth']['accessToken'])"
    ```
-2. Paste it into the token field in Settings — it saves automatically as you type, no button to click.
+2. Paste it into the token field in Settings — it saves automatically as you type (debounced), no button to click.
 3. Leave the field empty to go back to the automatic Claude Code token.
 
 Bonus: once a manual token is set, NotchWatch reads it from its own Keychain entry instead of Claude Code's — no more cross-app Keychain permission prompts.
@@ -84,6 +91,8 @@ Bonus: once a manual token is set, NotchWatch reads it from its own Keychain ent
 
 - `swift build` / `swift test` — build and run the unit tests locally (or let the [Test workflow](.github/workflows/test.yml) do it on a real macOS runner on every push/PR).
 - `.github/workflows/release.yml` — tag `vX.Y.Z` and push it (or run manually via `workflow_dispatch`) to build the `.app`, package a `.dmg`, publish a GitHub Release, and bump `Casks/notch-watch.rb` automatically.
+- User-facing strings live in `NotchWatch/Localization.swift` (`Strings` namespace, EN/FR pairs) — add both languages together when introducing new copy.
+- `PRODUCT.md` and `DESIGN.md` document the product intent and visual system respectively; read them before changing UI.
 
 ## Contributing
 
@@ -91,4 +100,4 @@ Contributions are welcome. Please follow the standard GitHub flow.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
