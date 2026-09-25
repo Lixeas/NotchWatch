@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest something NotchWatch should do
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's missing or annoying
+      description: The situation this would fix, not just the feature itself
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Optional
+    validations:
+      required: false
